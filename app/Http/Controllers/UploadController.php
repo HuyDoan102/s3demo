@@ -61,19 +61,14 @@ class UploadController extends Controller
     public function createAWSSDK()
     {
         $BUCKET_NAME = config('aws.bucket_name');
-
         //Create a S3Client
-        $s3Client = new S3Client([
-            'profile' => 'default',
-            'region' => config('aws.region'),
-            'version' => config('aws.version')
-        ]);
-
+        $s3Client = new S3Client(self::getS3Config());
         //Creating S3 Bucket
         try {
             $result = $s3Client->createBucket([
                 'Bucket' => $BUCKET_NAME,
             ]);
+            echo "Create SUCCESS";
 
         } catch (AwsException $e) {
             echo $e->getMessage();
@@ -102,10 +97,16 @@ class UploadController extends Controller
         $dir = base_path('storage/upload/');
 //        $dir_storage = storage_path('upload/');
 //        dd($dir_storage . " " . $dir);
-dd($client);
+//dd($client);
         try {
-            $client->uploadDirectory($dir,
-                config('aws.bucket_name'), 'FolderTestUpload');
+            $client->uploadDirectory($dir, config('aws.bucket_name'), 'FolderTestUpload',
+                array(
+                    'before' => function(\AWS\Command $command){
+                        $command['ACL'] = 'public-read';
+                    },
+                )
+            );
+            echo "UPLOAD DIRECTORY SUCCESS";
         } catch (\Exception $ex) {
             throw ($ex);
             return false;

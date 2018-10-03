@@ -19,5 +19,5 @@ Route::get('/upload', function () {
 });
 Route::post('/upload-s3', 'UploadController@uploadS3')->name('s3');
 Route::post('/upload-sdk', 'UploadController@uploadSDK')->name('sdk');
-Route::get('/upload-aws-sdk', 'UploadController@createAWSSDK')->name('name');
+Route::get('/create-bucket-sdk', 'UploadController@createAWSSDK')->name('name');
 Route::get('/multi-upload', 'UploadController@UploadMulti')->name('multiUpload');
